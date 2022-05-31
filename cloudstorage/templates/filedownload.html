@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    {% for f in fileList %}
+        <p>{{f.upload_date}} {{f.title}} <a href = "{{f.url}}">다운로드</a></p>
+    {% endfor %}
+</div>
+{% endblock%}
