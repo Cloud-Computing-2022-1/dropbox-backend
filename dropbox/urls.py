@@ -15,11 +15,34 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-import accounts.views
+import accounts
+from rest_framework import routers
+from accounts.views import UserViewSet, LoginViewSet, LogoutViewSet
+from cloudstorage.views import FileUploadViewSet
+
+# 보유중인 url
+"""
+admin/
+
+accounts/home
+accounts/home/signup
+accounts/home/login
+accounts/home/logout
+
+storage/upload
+storage/download
+storage/list
+"""
+
+router = routers.DefaultRouter()
+router.register(r'accounts/login', LoginViewSet, basename='loginModel')
+router.register(r'accounts/logout', LogoutViewSet, basename='logoutModel')
+router.register(r'accounts/user', UserViewSet)
+router.register(r'storage/upload', FileUploadViewSet)
 
 urlpatterns = [
-    path('',accounts.views.home),
-    path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
-    path('storage/', include('cloudstorage.urls')),
+    path("", include(router.urls)),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("accounts.urls")),
+    path("storage/", include("cloudstorage.urls")),
 ]
