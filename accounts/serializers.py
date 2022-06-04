@@ -1,7 +1,7 @@
-from collections import UserDict
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from cloudstorage.models import FolderTree
 
 # User 정보 중 userId 를 json으로 변환하기 위한 serializer
 # views.py에 django의 기본 user 생성 기능을 이용하였으므로 import하여 해당 모델을 그대로 사용
@@ -28,7 +28,6 @@ class UserSerializer(serializers.ModelSerializer):
             user = User.objects.create(**validated_data)
             user.set_password(validated_data["password"])
             user.save()
-
             return user
 
         # user 정보 업데이트

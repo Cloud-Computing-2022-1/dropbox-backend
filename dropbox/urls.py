@@ -38,7 +38,7 @@ storage/list
 
 router = routers.DefaultRouter()
 router.registry.extend(accountsRouter.registry)
-#router.registry.extend(cloudstorageRouter.registry)
+router.registry.extend(cloudstorageRouter.registry)
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -1,9 +1,10 @@
 from django.urls import path, include
-from .views import FileViewSet
+from .views import FileViewSet, FolderTreeViewSet
 from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'files', FileViewSet)
+router.register(r'folders', FolderTreeViewSet)
 
 fileList = FileViewSet.as_view(
     {

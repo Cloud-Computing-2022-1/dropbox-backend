@@ -1,4 +1,5 @@
-from .models import FileInfo
+from email.policy import default
+from .models import FileInfo, FolderTree
 from rest_framework import serializers
 from rest_framework.serializers import Serializer, FileField
 
@@ -9,9 +10,21 @@ from rest_framework.serializers import Serializer, FileField
 class FileInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileInfo
-        fields = ["id","title", "url", "owner", "key", "upload_date"]
+        fields = ["id","title", "url", "owner", "key", "upload_date","file_path"]
 
 class UploadSerializer(Serializer):
     files = FileField()
+    file_path = serializers.CharField(default='/', max_length=100)
     class Meta:
-        fields = ['files']
+        fields = ['files','file_path']
+
+class FolderTreeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FolderTree
+        fields = ["id","owner", "tree"]
+
+class CreateFolderSerializer(Serializer):
+    file_path = serializers.CharField(default='/', max_length=100)
+    name = serializers.CharField(required=True)
+    class Meta:
+        fields = ['file_path','name']

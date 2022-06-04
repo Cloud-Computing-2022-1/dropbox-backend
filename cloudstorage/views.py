@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from django.views.generic import View
 from .storage import s3_client, FileUpload  # S3 storage와 통신하기 위한 모듈
-from .models import FileInfo  # FileInfo 스키마 가져옴
-from .serializers import FileInfoSerializer, UploadSerializer  # fileinfo 모델에 대한 정보를 가져오는 serializer 정의 후 import
+from .models import FileInfo, FolderTree  # FileInfo 스키마 가져옴
+from .serializers import CreateFolderSerializer, FileInfoSerializer, FolderTreeSerializer, UploadSerializer  # fileinfo 모델에 대한 정보를 가져오는 serializer 정의 후 import
 from rest_framework import viewsets, status
 from rest_framework.views import APIView  # 클래스로 정의되는 APIView 사용
 
@@ -40,7 +40,7 @@ class FileViewSet(viewsets.ModelViewSet):
         # serializer 활용 upload
         for f in request.FILES.getlist("files"):
             file_key, file_url = FileUpload(s3_client).upload(f)
-            info = FileInfo(title=f.name, url=file_url, owner=request.user, key=file_key)
+            info = FileInfo(title=f.name, url=file_url, owner=request.user, key=file_key, file_path=request.data.get('file_path'))
             info.save()
             serializer = FileInfoSerializer(info,data= request.data)
             if serializer.is_valid():
@@ -68,3 +68,40 @@ class FileViewSet(viewsets.ModelViewSet):
 
         return Response(response_data)
 
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FolderTreeViewSet(viewsets.ModelViewSet):
+    queryset = FolderTree.objects.all()
+    serializer_class = CreateFolderSerializer
+
+    def list(self, request):
+        if request.user.is_authenticated:
+            tree = FolderTree.objects.get(owner=request.user)
+            serializer = FolderTreeSerializer(tree)
+
+            return Response(serializer.data)
+        else:
+            return Response("로그인된 상태가 아닙니다.")
+
+    def create(self, request):
+        if not request.user.is_authenticated:
+            return Response("로그인된 상태가 아닙니다.")
+
+        tree = FolderTree.objects.get(owner=request.user)
+        serializer = FolderTreeSerializer(tree)
+        treeDict = serializer.data
+        pathList = request.data.get("file_path").split('/')
+        
+        cur = treeDict['tree']['root']
+        
+        for path in pathList:
+            if path == '':
+                continue
+            cur = cur[path]
+        cur[request.data.get("name")] = {}
+        tree.tree = treeDict['tree']
+        tree.save()
+
+        serializer = FolderTreeSerializer(tree)
+        return Response(serializer.data)

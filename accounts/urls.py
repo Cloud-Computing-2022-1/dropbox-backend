@@ -10,10 +10,18 @@ router.register(r"login", LoginViewSet, basename='loginModel')
 router.register(r'logout', LogoutViewSet, basename='logoutModel')
 router.register(r"user", UserViewSet)
 
+userDetail = UserViewSet.as_view(
+    {
+        #'get': 'retrieve',
+        # 'put': 'update',
+        # 'patch': 'partial_update',
+        'delete': 'destroy',
+    }
+)
+
 # UserViewSet은 UserSerializer를 통해 생성되는데, UserSerializer는 내부에 validity check, create 함수를 보유하고
 
 urlpatterns = [
-    path(
-        "", include(router.urls)
-    ),
+    path("", include(router.urls)),
+    path('<int:pk>/', userDetail),
 ]
