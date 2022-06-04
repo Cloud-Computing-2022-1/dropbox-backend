@@ -18,7 +18,7 @@ from django.urls import path, include
 import accounts
 from rest_framework import routers
 from accounts.views import UserViewSet, LoginViewSet, LogoutViewSet
-from cloudstorage.views import FileViewSet, FileViewSet
+from cloudstorage.views import FileViewSet, FileViewSet, SearchViewSet
 from accounts.urls import router as accountsRouter
 from cloudstorage.urls import router as cloudstorageRouter
 
@@ -40,10 +40,18 @@ router = routers.DefaultRouter()
 router.registry.extend(accountsRouter.registry)
 router.registry.extend(cloudstorageRouter.registry)
 
+searchFolder = SearchViewSet.as_view(
+    {
+        'get': 'searchFolder',
+    }
+)
+
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
-    path('files/',include('cloudstorage.urls'))
+    path('files/',include('cloudstorage.urls')),
+    path('folders/',include('cloudstorage.urls')),
+    path('folders/search/<str:keyword>/', searchFolder),
     # path("accounts/", include("accounts.urls")),
     # path("storage/", include("cloudstorage.urls")),
 ]

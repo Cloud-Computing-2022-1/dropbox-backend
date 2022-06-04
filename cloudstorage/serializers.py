@@ -28,3 +28,14 @@ class CreateFolderSerializer(Serializer):
     name = serializers.CharField(required=True)
     class Meta:
         fields = ['file_path','name']
+
+class DeleteFolderSerializer(Serializer):
+    file_path = serializers.CharField(required=True, max_length=100)
+    class Meta:
+        fields = ['file_path']
+
+class SearchSerializer(Serializer):
+    file_path = serializers.CharField(default='/', max_length=100)
+    name = serializers.CharField(default='')
+    class Meta:
+        fields = ['file_path','name']
