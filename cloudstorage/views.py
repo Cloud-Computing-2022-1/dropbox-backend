@@ -185,9 +185,12 @@ class SearchViewSet(viewsets.GenericViewSet):
         filePath = request.data.get("file_path")
         if (fileName == ""): #폴더만 검색
             fileList = fileList.filter(file_path__iexact=filePath)
-        else:
+        elif (filePath == ""): #이름으로만 검색
+            fileList = fileList.filter(title__icontains=fileName) 
+        else: # 둘 모두 검색
             fileList = fileList.filter(file_path__iexact=filePath)
             fileList = fileList.filter(title__icontains=fileName) 
+            
 
         response_data = {}
         response_data["result"] = []
