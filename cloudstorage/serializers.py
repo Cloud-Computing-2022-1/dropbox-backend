@@ -9,7 +9,7 @@ from rest_framework.serializers import Serializer, FileField
 class FileInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileInfo
-        fields = ["title", "url", "owner", "key"]
+        fields = ["id","title", "url", "owner", "key", "upload_date"]
 
 class UploadSerializer(Serializer):
     files = FileField()

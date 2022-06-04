@@ -131,7 +131,7 @@ def logout(request):
 
 
 """
-# home
-@api_view(["GET"])
-def home(request):
-    return render(request, "home.html")
+# # home
+# @api_view(["GET"])
+# def home(request):
+#     return render(request, "home.html")

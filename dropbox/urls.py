@@ -18,7 +18,9 @@ from django.urls import path, include
 import accounts
 from rest_framework import routers
 from accounts.views import UserViewSet, LoginViewSet, LogoutViewSet
-from cloudstorage.views import FileUploadViewSet
+from cloudstorage.views import FileViewSet, FileViewSet
+from accounts.urls import router as accountsRouter
+from cloudstorage.urls import router as cloudstorageRouter
 
 # 보유중인 url
 """
@@ -35,14 +37,13 @@ storage/list
 """
 
 router = routers.DefaultRouter()
-router.register(r'accounts/login', LoginViewSet, basename='loginModel')
-router.register(r'accounts/logout', LogoutViewSet, basename='logoutModel')
-router.register(r'accounts/user', UserViewSet)
-router.register(r'storage/upload', FileUploadViewSet)
+router.registry.extend(accountsRouter.registry)
+#router.registry.extend(cloudstorageRouter.registry)
 
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
-    path("accounts/", include("accounts.urls")),
-    path("storage/", include("cloudstorage.urls")),
+    path('files/',include('cloudstorage.urls'))
+    # path("accounts/", include("accounts.urls")),
+    # path("storage/", include("cloudstorage.urls")),
 ]

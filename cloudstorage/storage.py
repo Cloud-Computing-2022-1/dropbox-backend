@@ -1,7 +1,9 @@
 import boto3
 import uuid
+from datetime import datetime, timedelta
 
 from django.conf import settings
+from botocore.client import Config
 
 # S3과 통신하기 위한 파일, settings.py로부터 access key와 secret key, bucket name을 받아서 s3 클라이언트를 생성하고 통신.
 
@@ -17,7 +19,8 @@ class FileUpload:
 class MyS3Client:
     def __init__(self, access_key, secret_key, bucket_name):
         boto3_s3 = boto3.client(
-            "s3", aws_access_key_id=access_key, aws_secret_access_key=secret_key
+            "s3", aws_access_key_id=access_key, aws_secret_access_key=secret_key,
+            config=Config(region_name = 'ap-northeast-2', signature_version='s3v4')
         )
         self.s3_client = boto3_s3
         self.bucket_name = bucket_name
@@ -37,6 +40,20 @@ class MyS3Client:
             )  # 업로드 시 ap-northeast-2에 있는 s3 bucket에 저장하도록 지정, 업로드 완료 시 파일 id와 url 디비에 저장
         except:
             return None
+
+    def getPresignedURL(self, key, duration):
+        url = self.s3_client.generate_presigned_url(
+            ClientMethod='get_object',
+            Params={
+                'Bucket': self.bucket_name,
+                'Key': key
+            },
+            ExpiresIn=duration # 초 단위
+        )
+        now = datetime.now()
+        expDatetime = now + timedelta(seconds=duration)
+
+        return url, expDatetime;
 
 
 # MyS3Client instance
