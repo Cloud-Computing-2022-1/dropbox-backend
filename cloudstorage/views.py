@@ -52,7 +52,7 @@ class FileViewSet(viewsets.ModelViewSet):
         
         rootDict = treeDict['tree']['root']
         pathList = request.data.get("file_path").split('/')
-        if len(pathList) < 2:
+        if len(pathList) <= 2:
             pass
         else:
             result = searchDict(rootDict, pathList[-2])
