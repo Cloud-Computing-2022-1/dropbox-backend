@@ -180,6 +180,8 @@ class SearchViewSet(viewsets.GenericViewSet):
         if not request.user.is_authenticated:
             return Response("로그인된 상태가 아닙니다.")
 
+
+        self.queryset = FileInfo.objects.all
         fileList = FileInfo.objects.filter(owner=request.user)
         fileName = request.data.get("name")
         filePath = request.data.get("file_path")
@@ -204,6 +206,7 @@ class SearchViewSet(viewsets.GenericViewSet):
         if not request.user.is_authenticated:
             return Response("로그인된 상태가 아닙니다.")
 
+        self.queryset = FolderTree.objects.all
         tree = FolderTree.objects.get(owner=request.user)
         serializer = FolderTreeSerializer(tree)
         treeDict = serializer.data
@@ -214,7 +217,41 @@ class SearchViewSet(viewsets.GenericViewSet):
         response_data["result"] = result
 
         return Response(response_data)
+
+    def searchFolderPath(self,request):
+        if not request.user.is_authenticated:
+            return Response("로그인된 상태가 아닙니다.")
+
+        self.queryset = FolderTree.objects.all
+
+        exp = re.compile("^([\/]{1}[a-z0-9]+)+(\/){1}$|^([\/]{1})$")
+        filePath = request.data.get('file_path')
+        if not exp.match(filePath):
+            return Response("잘못된 path 형식입니다.")
+
+        tree = FolderTree.objects.get(owner=request.user)
+        serializer = FolderTreeSerializer(tree)
+        treeDict = serializer.data
         
+        rootDict = treeDict['tree']['root']
+        pathList = request.data.get("file_path").split('/')
+        if len(pathList) <= 2:
+            pass
+        else:
+            result = searchDict(rootDict, pathList[-2])
+            if filePath not in result:
+                return Response("존재하지 않는 path 입니다.")
+
+        cur = treeDict['tree']['root']
+        
+        for path in pathList:
+            if path == '':
+                continue
+            cur = cur[path]
+        
+        response_data = list(cur.keys())
+
+        return Response(response_data)
 
 
 def searchDict(dic, keyword):

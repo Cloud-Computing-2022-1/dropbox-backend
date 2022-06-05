@@ -46,12 +46,19 @@ searchFolder = SearchViewSet.as_view(
     }
 )
 
+searchFolderPath = SearchViewSet.as_view(
+    {
+        'post': 'searchFolderPath',
+    }
+)
+
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
     path('files/',include('cloudstorage.urls')),
-    path('folders/',include('cloudstorage.urls')),
+    #path('folders/',include('cloudstorage.urls')),
     path('folders/search/<str:keyword>/', searchFolder),
+    path('searchfolderpath/', searchFolderPath),
     # path("accounts/", include("accounts.urls")),
     # path("storage/", include("cloudstorage.urls")),
 ]
