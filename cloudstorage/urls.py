@@ -33,5 +33,5 @@ fileShare = FileViewSet.as_view(
 urlpatterns = [
     path('', fileList),
     path('<int:pk>/', fileDetail),
-    path('<int:pk>/share/<int:duration>', fileShare),
+    path('<int:pk>/share/<int:duration>/', fileShare),
 ]
