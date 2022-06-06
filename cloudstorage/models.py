@@ -12,6 +12,7 @@ class FileInfo(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     key = models.TextField(max_length=40, null=True)
+    script = models.TextField(null=True, blank=True, verbose_name="동영상 스크립트")
 
     def __str__(self):
         return self.title
