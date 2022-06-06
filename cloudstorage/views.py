@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.http.response import JsonResponse
 from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from django.views.generic import View
@@ -11,6 +12,9 @@ from rest_framework.views import APIView  # 클래스로 정의되는 APIView �
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+
+# Permissions
+from rest_framework.permissions import IsAuthenticated
 
 import re
 
@@ -266,3 +270,39 @@ def searchDict(dic, keyword):
 
     search(dic,path)
     return result
+
+
+# Add by 윤석찬
+class BatchApplyAPI(APIView):
+    """
+    파일 이름 일괄적용하는 함수
+    """
+    
+    permission_classes = [IsAuthenticated,]
+    
+    def patch(self, request):
+        """
+        파일 이름 일괄 대치(replace)하는 함수
+        :param file_ids: file id 배열
+        :param search: 수정하고자 하는 기존 문자열
+        :param replace: 수정하고자 하는 새 문자열
+        """
+        
+        file_ids = request.data.get("file_ids", [])
+        search = request.data.get("search", "")
+        replace = request.data.get("replace", "")
+        
+        for file_id in file_ids:
+            try:
+                file = FileInfo.objects.get(
+                    id=file_id,
+                    user=request.user,
+                )
+            except FileInfo.DoesNotExist:
+                continue
+            
+            file.title = file.title.replace(search, replace)
+            file.save()
+        
+        return JsonResponse({})
+        
