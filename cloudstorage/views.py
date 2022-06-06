@@ -307,17 +307,23 @@ class BatchApplyAPI(APIView):
         search = request.data.get("search", "")
         replace = request.data.get("replace", "")
         
-        for file_id in file_ids:
-            try:
-                file = FileInfo.objects.get(
-                    id=file_id,
-                    user=request.user,
-                )
-            except FileInfo.DoesNotExist:
-                continue
+        replaced_files = []
+        
+        files = FileInfo.objects.filter(
+            user=request.user,
+            id__in=file_ids,
+        )
+        
+        for file in files:
+            file = FileInfo.objects.get(
+                id=file_ids,
+                user=request.user,
+            )
             
             file.title = file.title.replace(search, replace)
             file.save()
         
-        return JsonResponse({})
+        return JsonResponse({
+            "result": FileInfoSerializer(files).data
+        })
         
