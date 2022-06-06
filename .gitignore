@@ -2,6 +2,7 @@
 
 secrets.json
 .static_root/
+venv/
 
 ### OSX ###
 .DS_Store
