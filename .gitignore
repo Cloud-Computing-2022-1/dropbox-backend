@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io
 
 secrets.json
+.static_root/
 
 ### OSX ###
 .DS_Store
