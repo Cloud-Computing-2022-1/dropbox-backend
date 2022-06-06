@@ -257,6 +257,21 @@ class SearchViewSet(viewsets.GenericViewSet):
 
         return Response(response_data)
 
+    def searchScript(self,request,keyword=None):
+        if not request.user.is_authenticated:
+            return Response("로그인된 상태가 아닙니다.")
+
+        self.queryset = FileInfo.objects.all
+
+        fileList = FileInfo.objects.filter(script__icontains=keyword)
+        response_data = {}
+        response_data["result"] = []
+        for f in fileList:
+            serializer = FileInfoSerializer(f)
+            response_data["result"].append(serializer.data)
+
+        return Response(response_data)
+
 
 def searchDict(dic, keyword):
     result = []

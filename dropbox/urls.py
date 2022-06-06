@@ -52,6 +52,12 @@ searchFolderPath = SearchViewSet.as_view(
     }
 )
 
+searchScript = SearchViewSet.as_view(
+    {
+        'get': 'searchScript',
+    }
+)
+
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
@@ -59,6 +65,7 @@ urlpatterns = [
     #path('folders/',include('cloudstorage.urls')),
     path('folders/search/<str:keyword>/', searchFolder),
     path('searchfolderpath/', searchFolderPath),
+    path('searchscript/<str:keyword>/', searchScript)
     # path("accounts/", include("accounts.urls")),
     # path("storage/", include("cloudstorage.urls")),
 ]
