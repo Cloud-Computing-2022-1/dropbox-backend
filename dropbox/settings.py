@@ -51,6 +51,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -58,7 +59,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'django_extensions',
-    'corsheaders',
     "rest_framework",
     "cloudstorage",
     "accounts"
@@ -76,6 +76,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 # authtication 방식을 sessionId 방식으로 사용하기 위한 추가 내용
 REST_FRAMEWORK = {
