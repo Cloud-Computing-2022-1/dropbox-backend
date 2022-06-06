@@ -1,6 +1,5 @@
 from django.urls import path, include
 from .views import DeleteFolderViewSet, FileViewSet, FolderTreeViewSet,SearchViewSet
-from cloudstorage.views import BatchApplyAPI
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -35,5 +34,4 @@ urlpatterns = [
     path('', fileList),
     path('<int:pk>/', fileDetail),
     path('<int:pk>/share/<int:duration>', fileShare),
-    path('batch/', BatchApplyAPI.as_view()),
 ]
