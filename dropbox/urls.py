@@ -21,6 +21,7 @@ from accounts.views import UserViewSet, LoginViewSet, LogoutViewSet
 from cloudstorage.views import FileViewSet, FileViewSet, SearchViewSet
 from accounts.urls import router as accountsRouter
 from cloudstorage.urls import router as cloudstorageRouter
+from cloudstorage.views import BatchApplyAPI
 
 # 보유중인 url
 """
@@ -65,7 +66,8 @@ urlpatterns = [
     #path('folders/',include('cloudstorage.urls')),
     path('folders/search/<str:keyword>/', searchFolder),
     path('searchfolderpath/', searchFolderPath),
-    path('searchscript/<str:keyword>/', searchScript)
+    path('searchscript/<str:keyword>/', searchScript),
     # path("accounts/", include("accounts.urls")),
     # path("storage/", include("cloudstorage.urls")),
+    path('batch/', BatchApplyAPI.as_view()),
 ]
