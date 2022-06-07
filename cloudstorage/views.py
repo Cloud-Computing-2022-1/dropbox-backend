@@ -263,7 +263,8 @@ class SearchViewSet(viewsets.GenericViewSet):
 
         self.queryset = FileInfo.objects.all
 
-        fileList = FileInfo.objects.filter(script__icontains=keyword)
+        fileList = FileInfo.objects.filter(owner=request.user)
+        fileList = fileList.filter(script__icontains=keyword)
         response_data = {}
         response_data["result"] = []
         for f in fileList:
@@ -307,19 +308,17 @@ class BatchApplyAPI(APIView):
         search = request.data.get("search", "")
         replace = request.data.get("replace", "")
         
-        replaced_files = []
-        
+        if search == "":
+            return JsonResponse({
+                "result": []
+            })
         files = FileInfo.objects.filter(
-            user=request.user,
+            owner=request.user,
             id__in=file_ids,
         )
         
         for file in files:
-            file = FileInfo.objects.get(
-                id=file_ids,
-                user=request.user,
-            )
-            
+            print(search, replace)
             file.title = file.title.replace(search, replace)
             file.save()
         

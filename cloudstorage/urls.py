@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import DeleteFolderViewSet, FileViewSet, FolderTreeViewSet,SearchViewSet
+from .views import BatchApplyAPI, DeleteFolderViewSet, FileViewSet, FolderTreeViewSet,SearchViewSet
 from rest_framework import routers
 
 router = routers.DefaultRouter()
